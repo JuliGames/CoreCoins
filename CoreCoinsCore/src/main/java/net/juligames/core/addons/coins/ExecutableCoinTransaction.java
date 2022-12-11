@@ -136,4 +136,8 @@ public class ExecutableCoinTransaction implements CoinTransaction {
         }
 
     }
+
+    private void save() {
+
+    }
 }

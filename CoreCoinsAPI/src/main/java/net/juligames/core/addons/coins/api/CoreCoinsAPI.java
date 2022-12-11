@@ -1,6 +1,7 @@
 package net.juligames.core.addons.coins.api;
 
 import java.util.Collection;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 /**
@@ -21,4 +22,6 @@ public interface CoreCoinsAPI {
 
     Collection<CoinsAccount> getAllAccounts();
     Collection<CoinsAccount> getAllAccounts(Predicate<CoinsAccount> coinsAccountPredicate);
+
+    CoinsAccount createAccount(String name, UUID owner);
 }

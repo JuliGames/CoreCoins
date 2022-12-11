@@ -4,6 +4,8 @@ import net.juligames.core.addons.coins.api.Coin;
 import net.juligames.core.addons.coins.api.CoinTransaction;
 import net.juligames.core.addons.coins.api.CoinsAccount;
 import net.juligames.core.addons.coins.api.CoreCoinsAPI;
+import net.juligames.core.addons.coins.jdbi.AccountBean;
+import net.juligames.core.addons.coins.jdbi.AccountDAO;
 import net.juligames.core.addons.coins.jdbi.CoinBean;
 import net.juligames.core.addons.coins.jdbi.CoinDAO;
 import net.juligames.core.api.API;
@@ -12,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 /**
@@ -54,6 +57,14 @@ public final class CoreCoinsCore implements CoreCoinsAPI {
             return extension.selectBean(name);
         });
         return Objects.requireNonNull(coinBean).assemble();
+    }
+
+    @Override
+    public CoinsAccount createAccount(String name, UUID owner) {
+        return jdbiApi().withExtension(AccountDAO.class, extension -> {
+            extension.insert(new AccountBean(name, owner.toString()));
+            return new CoreCoinsAccount(name);
+        });
     }
 
     @Override
