@@ -1,17 +1,16 @@
 package net.juligames.core.addons.coins;
 
 import net.juligames.core.addons.coins.api.*;
-import net.juligames.core.addons.coins.jdbi.AccountBean;
-import net.juligames.core.addons.coins.jdbi.AccountDAO;
-import net.juligames.core.addons.coins.jdbi.CoinBean;
-import net.juligames.core.addons.coins.jdbi.CoinDAO;
+import net.juligames.core.addons.coins.jdbi.*;
 import net.juligames.core.api.API;
 import net.juligames.core.api.err.dev.TODOException;
 import org.jdbi.v3.core.Jdbi;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -77,8 +76,9 @@ public final class CoreCoinsCore implements CoreCoinsAPI {
 
     }
 
+    @Contract("_, _, _ -> new")
     @Override
-    public StaticCoinExchanger getExchanger(Coin from, Coin to, double factor) {
+    public @NotNull StaticCoinExchanger getExchanger(Coin from, Coin to, double factor) {
         return new CoreStaticCoinExchanger(from, to, factor);
     }
 
@@ -89,7 +89,9 @@ public final class CoreCoinsCore implements CoreCoinsAPI {
 
     @Override
     public Collection<CoinTransaction> getAllTransactions() {
-        throw new TODOException();
+        return jdbiApi().withExtension(TransactionDAO.class,extension ->
+                extension.listAllBeans().stream().map(bean ->
+                        (CoinTransaction) ExecutableCoinTransaction.fromBean(bean)).toList());
     }
 
     @Override

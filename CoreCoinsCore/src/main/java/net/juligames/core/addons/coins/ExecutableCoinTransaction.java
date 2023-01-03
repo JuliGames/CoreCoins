@@ -3,13 +3,17 @@ package net.juligames.core.addons.coins;
 import net.juligames.core.addons.coins.api.Coin;
 import net.juligames.core.addons.coins.api.CoinTransaction;
 import net.juligames.core.addons.coins.api.CoinsAccount;
+import net.juligames.core.addons.coins.api.CoreCoinsAPI;
 import net.juligames.core.addons.coins.api.err.AccountDeficitException;
 import net.juligames.core.addons.coins.api.err.AccountOverflowException;
 import net.juligames.core.addons.coins.api.err.TransactionAlreadyCompletedException;
 import net.juligames.core.addons.coins.api.err.TransactionException;
 import net.juligames.core.addons.coins.jdbi.BalanceDAO;
 import net.juligames.core.addons.coins.jdbi.CauseJDBI;
+import net.juligames.core.addons.coins.jdbi.TransactionBean;
+import net.juligames.core.addons.coins.jdbi.TransactionDAO;
 import net.juligames.core.api.API;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -36,6 +40,25 @@ public class ExecutableCoinTransaction implements CoinTransaction {
     @Range(from = Integer.MIN_VALUE, to = Integer.MAX_VALUE)
     private int amount = 0;
 
+    @ApiStatus.Internal
+    protected static @NotNull ExecutableCoinTransaction fromBean(@NotNull TransactionBean bean) {
+        @Nullable UUID uuid = bean.getInitiator().isEmpty()? null: UUID.fromString(bean.getInitiator());
+        return new ExecutableCoinTransaction(uuid,
+                account(bean.getFrom()),account(bean.getTo()),
+                coin(bean.getCoin()),
+                bean.getAmount(), Date.from(bean.getTimeStamp().toInstant()));
+    }
+
+    @ApiStatus.Internal
+    private static CoinsAccount account(String s) {
+        return CoreCoinsAPI.get().getAccount(s);
+    }
+
+    @ApiStatus.Internal
+    private static Coin coin(String s){
+        return CoreCoinsAPI.get().getCoin(s);
+    }
+
     public ExecutableCoinTransaction(@Nullable UUID initiator, @NotNull CoinsAccount from,
                                      @NotNull CoinsAccount to, @NotNull Coin coin,
                                      @Range(from = Integer.MIN_VALUE, to = Integer.MAX_VALUE) int amount) {
@@ -45,6 +68,20 @@ public class ExecutableCoinTransaction implements CoinTransaction {
         this.coin = coin;
         this.amount = amount;
         this.transactionExceptions = new ArrayList<>();
+    }
+
+    /**
+     * This Constructor uses the {@link ExecutableCoinTransaction} as a record for {@link CoinTransaction} History.
+     * An Instance created with this constructor will not be executable
+     */
+    @ApiStatus.Internal
+    protected ExecutableCoinTransaction(@Nullable UUID initiator, @NotNull CoinsAccount from,
+                                     @NotNull CoinsAccount to, @NotNull Coin coin,
+                                     @Range(from = Integer.MIN_VALUE, to = Integer.MAX_VALUE) int amount,
+                                     @NotNull Date timeStamp) {
+        this(initiator,from,to,coin,amount);
+        this.executed = true;
+        this.timeStamp = timeStamp;
     }
 
     @Override
@@ -126,6 +163,15 @@ public class ExecutableCoinTransaction implements CoinTransaction {
                     BalanceDAO balanceDAO = handle.attach(BalanceDAO.class);
                     balanceDAO.update(from.accountName(), coin.getName(), newFromBalance);
                     balanceDAO.update(to.accountName(), coin.getName(), newToBalance);
+                    return null;
+                });
+            }
+            {
+                //Add to DB
+                final java.sql.Date date = new java.sql.Date(timeStamp.getTime()); //very unnecessary
+                API.get().getSQLManager().getJdbi().withExtension(TransactionDAO.class, extension -> {
+                    extension.insert(date, from.accountName(), to.accountName(),
+                            coin.getName(), amount, initiator != null ? initiator.toString() : "");
                     return null;
                 });
             }

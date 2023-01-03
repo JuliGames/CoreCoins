@@ -13,13 +13,15 @@ public class TransactionBean {
     private String to; //AccountName fkey
     private String initiator; //UUID nullable
     private String coin; //CoinName
+    private int amount;
 
-    public TransactionBean(Date timeStamp, String from, String to, String initiator, String coin) {
+    public TransactionBean(Date timeStamp, String from, String to, String initiator, String coin, int amount) {
         this.timeStamp = timeStamp;
         this.from = from;
         this.to = to;
         this.initiator = initiator;
         this.coin = coin;
+        this.amount = amount;
     }
 
     public TransactionBean() {
@@ -63,5 +65,13 @@ public class TransactionBean {
 
     public void setCoin(String coin) {
         this.coin = coin;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 }
