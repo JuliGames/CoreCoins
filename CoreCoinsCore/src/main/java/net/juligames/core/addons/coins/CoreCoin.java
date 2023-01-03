@@ -1,6 +1,8 @@
 package net.juligames.core.addons.coins;
 
 import net.juligames.core.addons.coins.api.Coin;
+import net.juligames.core.addons.coins.jdbi.CoinBean;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,13 +23,19 @@ public class CoreCoin implements Coin {
         this.description = description;
     }
 
+    @ApiStatus.Experimental
+    public CoreCoin(@NotNull CoinBean coinBean) {
+        this(coinBean.getName(), coinBean.getDescription());
+    }
+
     @Override
-    public String getName() {
+    public @NotNull String getName() {
+
         return name;
     }
 
     @Override
-    public String getDescription() {
+    public @Nullable String getDescription() {
         return description;
     }
 }

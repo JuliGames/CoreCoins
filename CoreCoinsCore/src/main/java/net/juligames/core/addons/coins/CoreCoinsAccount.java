@@ -5,8 +5,10 @@ import net.juligames.core.addons.coins.api.Coin;
 import net.juligames.core.addons.coins.api.CoinsAccount;
 import net.juligames.core.addons.coins.jdbi.AccountBean;
 import net.juligames.core.addons.coins.jdbi.AccountDAO;
+import net.juligames.core.addons.coins.jdbi.CoinBean;
 import net.juligames.core.api.API;
 import net.juligames.core.api.TODO;
+import org.checkerframework.checker.units.qual.A;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.extension.ExtensionCallback;
 import org.jetbrains.annotations.Contract;
@@ -37,8 +39,15 @@ public class CoreCoinsAccount implements CoinsAccount {
         jdbi = API.get().getSQLManager().getJdbi();
 
         //check or throw
-        Object coinBean = jdbi.withExtension(AccountDAO.class, extension -> extension.selectBean(accountName));
-        Objects.requireNonNull(coinBean);
+        AccountBean bean = jdbi.withExtension(AccountDAO.class, extension -> extension.selectBean(accountName));
+        Objects.requireNonNull(bean);
+    }
+
+    private CoreCoinsAccount(AccountBean accountBean) {
+        this.accountName = accountBean.getAccountName();
+        jdbi = API.get().getSQLManager().getJdbi();;
+
+
     }
 
     public String accountName() {

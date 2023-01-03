@@ -1,5 +1,7 @@
 package net.juligames.core.addons.coins.api;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -15,7 +17,7 @@ public interface CoreCoinsAPI {
 
     Coin getCoin(String name);
 
-    CoinTransaction transact(Coin coin, CoinsAccount sender, CoinsAccount recipient, int amount);
+    CoinTransaction transact(Coin coin, CoinsAccount sender, CoinsAccount recipient, int amount,@Nullable UUID initiator);
 
     Collection<Coin> getAllCoins();
     Collection<Coin> getAllCoins(Predicate<Coin> coinPredicate);

@@ -42,9 +42,9 @@ public class ExecutableCoinTransaction implements CoinTransaction {
         this.transactionExceptions = new ArrayList<>();
     }
 
-    private @NotNull CoreCoinsAccount from;
-    private @NotNull CoreCoinsAccount to;
-    private @NotNull CoreCoin coin;
+    private @NotNull CoinsAccount from;
+    private @NotNull CoinsAccount to;
+    private @NotNull Coin coin;
 
     private boolean executed = false;
     private @NotNull Collection<TransactionException> transactionExceptions;
@@ -118,13 +118,14 @@ public class ExecutableCoinTransaction implements CoinTransaction {
             {
                 //from
                 int newBalance = from.getSpecificBalance(coin) - amount;
-                from.getBalance().put(coin,newBalance);
+                //from.getBalance().put(coin,newBalance); not allowed
+                //EXECUTE A TRANSACTION FOR BOTH
             }
 
             {
                 //to
                 int newBalance = to.getSpecificBalance(coin) + amount;
-                to.getBalance().put(coin,newBalance);
+                // to.getBalance().put(coin,newBalance); not allowed
             }
             //transaction finished
             executed = true;

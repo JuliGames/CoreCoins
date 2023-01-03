@@ -41,4 +41,8 @@ public interface CoinDAO {
     @SqlQuery("SELECT * FROM coins_coins where name = :name")
     CoinBean selectBean(@Bind("name") String name);
 
+    default boolean has(String name, String description) {
+        return listAllBeans().contains(new CoinBean(name,description));
+    }
+
 }

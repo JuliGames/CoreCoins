@@ -31,7 +31,7 @@ public interface CoinTransaction {
     @NotNull
     Coin coin();
 
-    @Range(from = Integer.MIN_VALUE, to = Integer.MAX_VALUE)
+    @Range(from = 0, to = Integer.MAX_VALUE)
     int amount();
 
     @NotNull
