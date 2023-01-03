@@ -11,7 +11,6 @@
     <modules>
         <module>CoreCoinsAPI</module>
         <module>CoreCoinsCore</module>
-        <module>CoreCoinsTest</module>
         <module>PaperCoinsCore</module>
         <module>VelocityCoinsCore</module>
     </modules>
