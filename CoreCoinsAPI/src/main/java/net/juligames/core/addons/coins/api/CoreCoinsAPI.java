@@ -17,8 +17,6 @@ public interface CoreCoinsAPI {
 
     /**
      * Gets or creates the Coin
-     * @param name
-     * @return
      */
     Coin getCoin(String name);
 
@@ -30,5 +28,13 @@ public interface CoreCoinsAPI {
     Collection<CoinsAccount> getAllAccounts();
     Collection<CoinsAccount> getAllAccounts(Predicate<CoinsAccount> coinsAccountPredicate);
 
+    /**
+     * creates the Account or does nothing
+     */
     CoinsAccount createAccount(String name, UUID owner);
+
+    /**
+     * Get or creates the Account (maybe without owner)
+     */
+    CoinsAccount getAccount(String accountName);
 }

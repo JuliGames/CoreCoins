@@ -29,7 +29,7 @@ public class ExecutableCoinTransaction implements CoinTransaction {
     private final @NotNull CoinsAccount to;
     private final @NotNull Coin coin;
     private boolean executed = false;
-    private @NotNull Collection<TransactionException> transactionExceptions;
+    private final @NotNull Collection<TransactionException> transactionExceptions;
     @Range(from = Integer.MIN_VALUE, to = Integer.MAX_VALUE)
     private int amount = 0;
 
