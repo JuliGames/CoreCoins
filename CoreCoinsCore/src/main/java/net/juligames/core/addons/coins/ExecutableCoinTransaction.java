@@ -7,6 +7,9 @@ import net.juligames.core.addons.coins.api.err.AccountDeficitException;
 import net.juligames.core.addons.coins.api.err.AccountOverflowException;
 import net.juligames.core.addons.coins.api.err.TransactionAlreadyCompletedException;
 import net.juligames.core.addons.coins.api.err.TransactionException;
+import net.juligames.core.addons.coins.jdbi.BalanceDAO;
+import net.juligames.core.addons.coins.jdbi.CauseJDBI;
+import net.juligames.core.api.API;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -74,6 +77,9 @@ public class ExecutableCoinTransaction implements CoinTransaction {
         return "transfer " + amount + " " + coin.getName() + " from " + from.accountName() + " to " + to.accountName();
     }
 
+    /**
+     * Date of the last attempt
+     */
     @Override
     public @Nullable Date timestamp() {
         return timeStamp;
@@ -85,16 +91,18 @@ public class ExecutableCoinTransaction implements CoinTransaction {
     }
 
     @Override
-    public @NotNull Collection<TransactionException> failures() {
+    public synchronized @NotNull Collection<TransactionException> failures() {
         return transactionExceptions;
     }
 
     //execute
+    @CauseJDBI
     public synchronized void execute() {
         try {
             if (executed) {
                 throw new TransactionAlreadyCompletedException();
             }
+            executed = true;
             //run
             final int balance = from.getSpecificBalance(coin);
             //check 1 - deficit
@@ -109,19 +117,19 @@ public class ExecutableCoinTransaction implements CoinTransaction {
             //allowed transaction
             {
                 //from
-                int newBalance = from.getSpecificBalance(coin) - amount;
-                //from.getBalance().put(coin,newBalance); not allowed
-                //EXECUTE A TRANSACTION FOR BOTH
+                final int newFromBalance = from.getSpecificBalance(coin) - amount;
+                final int newToBalance = to.getSpecificBalance(coin) + amount;
+
+                timeStamp = Date.from(Instant.now()); // set before possible throw
+
+                API.get().getSQLManager().getJdbi().inTransaction(handle -> {
+                    BalanceDAO balanceDAO = handle.attach(BalanceDAO.class);
+                    balanceDAO.update(from.accountName(),coin.getName(),newFromBalance);
+                    balanceDAO.update(to.accountName(),coin.getName(),newToBalance);
+                    return null;
+                });
             }
 
-            {
-                //to
-                int newBalance = to.getSpecificBalance(coin) + amount;
-                // to.getBalance().put(coin,newBalance); not allowed
-            }
-            //transaction finished
-            executed = true;
-            timeStamp = Date.from(Instant.now());
         } catch (TransactionException transactionException) {
             failures().add(transactionException);
         } catch (Exception e) {
