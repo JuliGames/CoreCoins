@@ -11,7 +11,7 @@ import java.util.function.Predicate;
  * 10.12.2022
  */
 public interface CoreCoinsAPI {
-    default CoreCoinsAPI get() {
+    static CoreCoinsAPI get() {
         return CoreCoinsAPIAddon.getCoreCoinsAPI();
     }
 

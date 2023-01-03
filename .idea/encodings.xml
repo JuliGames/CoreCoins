@@ -5,6 +5,12 @@
     <file url="file://$PROJECT_DIR$/CoreCoinsAPI/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/CoreCoinsCore/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/CoreCoinsCore/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/CoreCoinsTest/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/CoreCoinsTest/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/PaperCoinsCore/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/PaperCoinsCore/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/VelocityCoinsCore/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/VelocityCoinsCore/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
   </component>

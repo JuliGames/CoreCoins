@@ -74,7 +74,7 @@ public class ExecutableCoinTransaction implements CoinTransaction {
 
     @Override
     public @NotNull String getTransferString() {
-        return "transfer " + amount + " " + coin.getName() + " from " + from.accountName() + " to " + to.accountName();
+        return (!successful()? "did not " : "" ) +  "transfer " + amount + " " + coin.getName() + " from " + from.accountName() + " to " + to.accountName();
     }
 
     /**

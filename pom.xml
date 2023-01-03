@@ -11,6 +11,9 @@
     <modules>
         <module>CoreCoinsAPI</module>
         <module>CoreCoinsCore</module>
+        <module>CoreCoinsTest</module>
+        <module>PaperCoinsCore</module>
+        <module>VelocityCoinsCore</module>
     </modules>
 
     <properties>
@@ -40,7 +43,7 @@
 
     <distributionManagement>
         <repository>
-            <id>juligames-juligames</id>
+            <id>juligames</id>
             <name>Juligames Maven</name>
             <url>https://maven.juligames.net/juligames</url>
         </repository>

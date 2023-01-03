@@ -1,0 +1,5 @@
+name: PaperCoinsCore
+version: '${project.version}'
+main: net.juligames.core.addons.coins.paper.PaperCoinsCore
+api-version: 1.18
+author: Ture Bentzin

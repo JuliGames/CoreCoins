@@ -40,6 +40,6 @@ public class CoinBean {
 
     @ApiStatus.Internal
     public CoreCoin assemble() {
-        return new CoreCoin(getName(),getDescription());
+        return new CoreCoin(getName());
     }
 }

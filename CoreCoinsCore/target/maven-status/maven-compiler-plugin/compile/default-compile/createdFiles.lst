@@ -1,0 +1,13 @@
+net\juligames\core\addons\coins\jdbi\BalanceDAO.class
+net\juligames\core\addons\coins\ExecutableCoinTransaction.class
+net\juligames\core\addons\coins\jdbi\CauseJDBI.class
+net\juligames\core\addons\coins\jdbi\AccountBean.class
+net\juligames\core\addons\coins\jdbi\CoinBean.class
+net\juligames\core\addons\coins\CoreCoinsAccount.class
+net\juligames\core\addons\coins\CoreCoinsCore.class
+net\juligames\core\addons\coins\CoreCoin.class
+net\juligames\core\addons\coins\jdbi\TransactionBean.class
+net\juligames\core\addons\coins\jdbi\TransactionDAO.class
+net\juligames\core\addons\coins\jdbi\AccountDAO.class
+net\juligames\core\addons\coins\jdbi\CoinDAO.class
+net\juligames\core\addons\coins\jdbi\BalanceBean.class

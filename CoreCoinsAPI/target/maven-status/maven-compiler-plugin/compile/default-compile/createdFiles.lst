@@ -1,0 +1,11 @@
+net\juligames\core\addons\coins\api\CoreCoinsAPIAddon.class
+net\juligames\core\addons\coins\api\err\TransactionAlreadyCompletedException.class
+net\juligames\core\addons\coins\api\err\AccountOverflowException.class
+net\juligames\core\addons\coins\api\err\AccountDeficitException.class
+net\juligames\core\addons\coins\api\err\TransactionException.class
+net\juligames\core\addons\coins\api\CoreCoinsAPI.class
+net\juligames\core\addons\coins\Main.class
+net\juligames\core\addons\coins\api\CoinsAccount.class
+net\juligames\core\addons\coins\api\Coin.class
+net\juligames\core\addons\coins\api\CoinTransaction.class
+net\juligames\core\addons\coins\api\err\Accounted.class

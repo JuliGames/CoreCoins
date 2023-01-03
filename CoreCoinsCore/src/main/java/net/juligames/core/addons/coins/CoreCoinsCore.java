@@ -1,9 +1,6 @@
 package net.juligames.core.addons.coins;
 
-import net.juligames.core.addons.coins.api.Coin;
-import net.juligames.core.addons.coins.api.CoinTransaction;
-import net.juligames.core.addons.coins.api.CoinsAccount;
-import net.juligames.core.addons.coins.api.CoreCoinsAPI;
+import net.juligames.core.addons.coins.api.*;
 import net.juligames.core.addons.coins.jdbi.AccountBean;
 import net.juligames.core.addons.coins.jdbi.AccountDAO;
 import net.juligames.core.addons.coins.jdbi.CoinBean;
@@ -27,12 +24,12 @@ public final class CoreCoinsCore implements CoreCoinsAPI {
 
     public CoreCoinsCore() {
         instance = this;
+        CoreCoinsAPIAddon.setCoreCoinsAPI(this);
         //setup jdbi
         setupJDBI(jdbiApi());
     }
 
-    @Override
-    public CoreCoinsCore get() {
+    public static CoreCoinsCore get() {
         return instance;
     }
 
