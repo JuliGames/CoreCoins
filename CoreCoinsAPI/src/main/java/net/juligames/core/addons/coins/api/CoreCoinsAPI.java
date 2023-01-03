@@ -15,6 +15,11 @@ public interface CoreCoinsAPI {
         return CoreCoinsAPIAddon.getCoreCoinsAPI();
     }
 
+    /**
+     * Gets or creates the Coin
+     * @param name
+     * @return
+     */
     Coin getCoin(String name);
 
     CoinTransaction transact(Coin coin, CoinsAccount sender, CoinsAccount recipient, int amount,@Nullable UUID initiator);

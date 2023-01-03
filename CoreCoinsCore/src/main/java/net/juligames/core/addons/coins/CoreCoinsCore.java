@@ -83,7 +83,7 @@ public final class CoreCoinsCore implements CoreCoinsAPI {
     public Collection<Coin> getAllCoins() {
         return jdbiApi().withExtension(CoinDAO.class,extension ->
                 extension.listAllBeans().stream().map(coinBean ->
-                        (Coin) new CoreCoin(coinBean.getName(),coinBean.getDescription())).toList());
+                        (Coin) new CoreCoin(coinBean.getName())).toList());
     }
 
     @Override
@@ -95,7 +95,7 @@ public final class CoreCoinsCore implements CoreCoinsAPI {
     public Collection<CoinsAccount> getAllAccounts() {
         return jdbiApi().withExtension(AccountDAO.class,extension ->
                 extension.listAllBeans().stream().map(accountBean ->
-                        (CoinsAccount) CoreCoinsAccount.fromBean(accountBean))).toList();
+                        (CoinsAccount) new CoreCoinsAccount(accountBean.getAccountName()))).toList();
     }
 
     @Override

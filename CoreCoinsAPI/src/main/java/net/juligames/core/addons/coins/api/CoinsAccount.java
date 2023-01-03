@@ -1,6 +1,5 @@
 package net.juligames.core.addons.coins.api;
 
-import com.google.protobuf.MapEntry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -24,7 +23,9 @@ public interface CoinsAccount {
 
     Map<Coin, Integer> getBalance();
 
-    MapEntry<Coin, Integer> getBalanceByName(String coinName);
+    int getSpecificBalance(Coin coin);
+
+    Map.Entry<Coin, Integer> getBalanceByName(String coinName);
 
     /**
      * This will delete all coins from this {@link CoinsAccount}

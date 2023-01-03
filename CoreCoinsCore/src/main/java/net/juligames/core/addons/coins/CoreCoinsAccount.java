@@ -1,23 +1,19 @@
 package net.juligames.core.addons.coins;
 
-import com.google.protobuf.MapEntry;
 import net.juligames.core.addons.coins.api.Coin;
 import net.juligames.core.addons.coins.api.CoinsAccount;
-import net.juligames.core.addons.coins.jdbi.AccountBean;
 import net.juligames.core.addons.coins.jdbi.AccountDAO;
-import net.juligames.core.addons.coins.jdbi.CoinBean;
+import net.juligames.core.addons.coins.jdbi.BalanceBean;
+import net.juligames.core.addons.coins.jdbi.BalanceDAO;
+import net.juligames.core.addons.coins.jdbi.CauseJDBI;
 import net.juligames.core.api.API;
 import net.juligames.core.api.TODO;
-import org.checkerframework.checker.units.qual.A;
-import org.jdbi.v3.core.Jdbi;
+import net.juligames.core.api.err.dev.TODOException;
+import org.checkerframework.checker.units.qual.C;
 import org.jdbi.v3.core.extension.ExtensionCallback;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Ture Bentzin
@@ -26,28 +22,10 @@ import java.util.UUID;
 @TODO(doNotcall = true)
 public class CoreCoinsAccount implements CoinsAccount {
 
-    @Contract("_ -> new")
-    public static @NotNull CoreCoinsAccount fromBean(@NotNull AccountBean accountBean) {
-        return new CoreCoinsAccount(accountBean.getAccountName());
-    }
-
     private final String accountName;
-    private final Jdbi jdbi;
 
     public CoreCoinsAccount(String accountName) {
         this.accountName = accountName;
-        jdbi = API.get().getSQLManager().getJdbi();
-
-        //check or throw
-        AccountBean bean = jdbi.withExtension(AccountDAO.class, extension -> extension.selectBean(accountName));
-        Objects.requireNonNull(bean);
-    }
-
-    private CoreCoinsAccount(AccountBean accountBean) {
-        this.accountName = accountBean.getAccountName();
-        jdbi = API.get().getSQLManager().getJdbi();;
-
-
     }
 
     public String accountName() {
@@ -55,37 +33,53 @@ public class CoreCoinsAccount implements CoinsAccount {
     }
 
     @Override
+    @CauseJDBI
     public @NotNull UUID getOwner() {
         return extension(extension -> UUID.fromString(extension.selectBean(accountName).getOwner()));
     }
 
     @Override
     public Collection<UUID> getUsers() {
-        return null;
+        throw new TODOException();
     }
 
     @Override
+    @CauseJDBI
     public Map<Coin, Integer> getBalance() {
-        return null;
+        return API.get().getSQLManager().getJdbi().withExtension(BalanceDAO.class, extension -> {
+            Map<Coin, Integer> map = new HashMap<>();
+            for (BalanceBean balanceBean : extension.selectBalance(accountName))
+                map.put(new CoreCoin(balanceBean.getCoinName()),balanceBean.getBalance());
+            return map;
+        });
     }
 
+    @CauseJDBI
     public int getSpecificBalance(Coin coin) {
         return getBalance().getOrDefault(coin, 0);
     }
 
     @Override
-    public MapEntry<Coin, Integer> getBalanceByName(String coinName) {
-        return null;
+    @CauseJDBI
+    public Map.Entry<Coin, Integer> getBalanceByName(String coinName) {
+        Optional<Map.Entry<Coin, Integer>> first = getBalance().entrySet().stream().filter(coinIntegerEntry ->
+                coinIntegerEntry.getKey().getName().equals(coinName)).findFirst();
+        return first.orElse(null);
     }
 
     @Override
+    @CauseJDBI
     public void empty() {
-
+        //delete all balance
+        API.get().getSQLManager().getJdbi().withExtension(BalanceDAO.class, extension -> {
+            extension.delete(accountName);
+            return null;
+        });
     }
 
-    public <R> R extension(ExtensionCallback<R,AccountDAO,Exception> extensionCallback){
+    private <R> R extension(ExtensionCallback<R,AccountDAO,Exception> extensionCallback){
         try {
-           return jdbi.withExtension(AccountDAO.class,extensionCallback);
+           return API.get().getSQLManager().getJdbi().withExtension(AccountDAO.class,extensionCallback);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

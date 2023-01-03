@@ -13,7 +13,7 @@ import java.util.List;
  * 11.12.2022
  */
 @RegisterBeanMapper(BalanceBean.class)
-public interface BalanceDao {
+public interface BalanceDAO {
 
 
     @SqlUpdate("""

@@ -23,18 +23,18 @@ import java.util.UUID;
  */
 public class ExecutableCoinTransaction implements CoinTransaction {
 
-    private @Nullable UUID initiator;
+    private final @Nullable UUID initiator;
     private @Nullable Date timeStamp;
-    private @NotNull CoinsAccount from;
-    private @NotNull CoinsAccount to;
-    private @NotNull Coin coin;
+    private final @NotNull CoinsAccount from;
+    private final @NotNull CoinsAccount to;
+    private final @NotNull Coin coin;
     private boolean executed = false;
     private @NotNull Collection<TransactionException> transactionExceptions;
     @Range(from = Integer.MIN_VALUE, to = Integer.MAX_VALUE)
     private int amount = 0;
 
-    public ExecutableCoinTransaction(@Nullable UUID initiator, @NotNull CoreCoinsAccount from,
-                                     @NotNull CoreCoinsAccount to, @NotNull CoreCoin coin,
+    public ExecutableCoinTransaction(@Nullable UUID initiator, @NotNull CoinsAccount from,
+                                     @NotNull CoinsAccount to, @NotNull Coin coin,
                                      @Range(from = Integer.MIN_VALUE, to = Integer.MAX_VALUE) int amount) {
         this.initiator = initiator;
         this.from = from;
@@ -50,17 +50,17 @@ public class ExecutableCoinTransaction implements CoinTransaction {
     }
 
     @Override
-    public @NotNull CoreCoinsAccount from() {
+    public @NotNull CoinsAccount from() {
         return from;
     }
 
     @Override
-    public @NotNull CoreCoinsAccount to() {
+    public @NotNull CoinsAccount to() {
         return to;
     }
 
     @Override
-    public @NotNull CoreCoin coin() {
+    public @NotNull Coin coin() {
         return coin;
     }
 
@@ -127,10 +127,6 @@ public class ExecutableCoinTransaction implements CoinTransaction {
         } catch (Exception e) {
             failures().add(new TransactionException("Transaction failed because of an unknown exception", e));
         }
-
-    }
-
-    private void save() {
 
     }
 }
