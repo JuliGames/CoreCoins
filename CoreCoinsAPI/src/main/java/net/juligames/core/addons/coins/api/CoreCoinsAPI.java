@@ -20,12 +20,19 @@ public interface CoreCoinsAPI {
      */
     Coin getCoin(String name);
 
-    CoinTransaction transact(Coin coin, CoinsAccount sender, CoinsAccount recipient, int amount,@Nullable UUID initiator);
+    /**
+     * Gets or creates the Coin
+     */
+    Coin getCoin(String name, String description);
+
+    CoinTransaction transact(Coin coin, CoinsAccount sender, CoinsAccount recipient, int amount, @Nullable UUID initiator);
 
     Collection<Coin> getAllCoins();
+
     Collection<Coin> getAllCoins(Predicate<Coin> coinPredicate);
 
     Collection<CoinsAccount> getAllAccounts();
+
     Collection<CoinsAccount> getAllAccounts(Predicate<CoinsAccount> coinsAccountPredicate);
 
     /**
@@ -37,4 +44,5 @@ public interface CoreCoinsAPI {
      * Get or creates the Account (maybe without owner)
      */
     CoinsAccount getAccount(String accountName);
+
 }

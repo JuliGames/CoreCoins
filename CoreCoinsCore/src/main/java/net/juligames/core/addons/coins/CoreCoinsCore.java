@@ -47,8 +47,13 @@ public final class CoreCoinsCore implements CoreCoinsAPI {
 
     @Override
     public CoreCoin getCoin(String name) {
+        return getCoin(name, null);
+    }
+
+    @Override
+    public CoreCoin getCoin(String name, @Nullable String description) {
         CoinBean coinBean = jdbiApi().withExtension(CoinDAO.class, extension -> {
-            extension.insert(new CoinBean(name, null));
+            extension.insert(new CoinBean(name, description));
             return extension.selectBean(name);
         });
         return Objects.requireNonNull(coinBean).assemble();

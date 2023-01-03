@@ -1,8 +1,8 @@
 package net.juligames.core.addons.coins.velocity;
 
 import com.google.inject.Inject;
-import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import net.juligames.core.addons.coins.CoreCoinsCore;
@@ -14,6 +14,7 @@ import org.slf4j.Logger;
         name = "VelocityCoinsCore",
         version = "1.0-SNAPSHOT",
         authors = "Ture Bentzin"
+
 )
 public class VelocityCoinsCore {
 

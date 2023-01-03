@@ -27,12 +27,12 @@ import java.util.UUID;
 public class ExecutableCoinTransaction implements CoinTransaction {
 
     private final @Nullable UUID initiator;
-    private @Nullable Date timeStamp;
     private final @NotNull CoinsAccount from;
     private final @NotNull CoinsAccount to;
     private final @NotNull Coin coin;
-    private boolean executed = false;
     private final @NotNull Collection<TransactionException> transactionExceptions;
+    private @Nullable Date timeStamp;
+    private boolean executed = false;
     @Range(from = Integer.MIN_VALUE, to = Integer.MAX_VALUE)
     private int amount = 0;
 
@@ -74,7 +74,7 @@ public class ExecutableCoinTransaction implements CoinTransaction {
 
     @Override
     public @NotNull String getTransferString() {
-        return (!successful()? "did not " : "" ) +  "transfer " + amount + " " + coin.getName() + " from " + from.accountName() + " to " + to.accountName();
+        return (!successful() ? "did not " : "") + "transfer " + amount + " " + coin.getName() + " from " + from.accountName() + " to " + to.accountName();
     }
 
     /**
@@ -124,8 +124,8 @@ public class ExecutableCoinTransaction implements CoinTransaction {
 
                 API.get().getSQLManager().getJdbi().inTransaction(handle -> {
                     BalanceDAO balanceDAO = handle.attach(BalanceDAO.class);
-                    balanceDAO.update(from.accountName(),coin.getName(),newFromBalance);
-                    balanceDAO.update(to.accountName(),coin.getName(),newToBalance);
+                    balanceDAO.update(from.accountName(), coin.getName(), newFromBalance);
+                    balanceDAO.update(to.accountName(), coin.getName(), newToBalance);
                     return null;
                 });
             }

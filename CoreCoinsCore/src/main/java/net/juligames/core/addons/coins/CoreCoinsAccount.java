@@ -9,11 +9,11 @@ import net.juligames.core.addons.coins.jdbi.CauseJDBI;
 import net.juligames.core.api.API;
 import net.juligames.core.api.TODO;
 import net.juligames.core.api.err.dev.TODOException;
-import org.checkerframework.checker.units.qual.C;
 import org.jdbi.v3.core.extension.ExtensionCallback;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * @author Ture Bentzin
@@ -49,7 +49,7 @@ public class CoreCoinsAccount implements CoinsAccount {
         return API.get().getSQLManager().getJdbi().withExtension(BalanceDAO.class, extension -> {
             Map<Coin, Integer> map = new HashMap<>();
             for (BalanceBean balanceBean : extension.selectBalance(accountName))
-                map.put(new CoreCoin(balanceBean.getCoinName()),balanceBean.getBalance());
+                map.put(new CoreCoin(balanceBean.getCoinName()), balanceBean.getBalance());
             return map;
         });
     }
@@ -67,6 +67,23 @@ public class CoreCoinsAccount implements CoinsAccount {
         return first.orElse(null);
     }
 
+    @CauseJDBI
+    @Override
+    public int changeAmount(Coin coin, Function<Integer, Integer> changer) {
+        return API.get().getSQLManager().getJdbi().withExtension(BalanceDAO.class, extension -> {
+            final int specificBalance = getSpecificBalance(coin);
+            final int newBalance = changer.apply(specificBalance);
+            extension.update(accountName, coin.getName(), newBalance);
+            return specificBalance;
+        });
+    }
+
+    @CauseJDBI
+    @Override
+    public int setAmount(Coin coin, int amount) {
+        return changeAmount(coin, integer -> amount);
+    }
+
     @Override
     @CauseJDBI
     public void empty() {
@@ -77,9 +94,9 @@ public class CoreCoinsAccount implements CoinsAccount {
         });
     }
 
-    private <R> R extension(ExtensionCallback<R,AccountDAO,Exception> extensionCallback){
+    private <R> R extension(ExtensionCallback<R, AccountDAO, Exception> extensionCallback) {
         try {
-           return API.get().getSQLManager().getJdbi().withExtension(AccountDAO.class,extensionCallback);
+            return API.get().getSQLManager().getJdbi().withExtension(AccountDAO.class, extensionCallback);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

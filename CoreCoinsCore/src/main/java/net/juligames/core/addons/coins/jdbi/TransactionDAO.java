@@ -17,7 +17,6 @@ import java.util.List;
 public interface TransactionDAO {
 
 
-
     @SqlUpdate("""
             create table if not exists coins_transaction
             (
@@ -27,7 +26,7 @@ public interface TransactionDAO {
             coin varchar(30) not null,
             amount int not null,
             initiator varchar(36) null,
-            
+                        
             constraint transaction_pk primary key(
             timeStamp,from_account,to_account,coin
             ),

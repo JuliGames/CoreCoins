@@ -13,8 +13,12 @@ import java.util.UUID;
  */
 public class Main {
     public static void main(String[] args) {
-        Coin coin = null;
-        CoinsAccount from = null,to = null;
+        Coin coin = CoreCoinsAPI.get().getCoin("Your Coin Name", "Description for your Coin");
+
+        UUID uuid = UUID.randomUUID();
+        CoinsAccount coinsAccount = CoreCoinsAPI.get().createAccount("AccountName", uuid);
+
+        CoinsAccount from = null, to = null;
         CoinTransaction transact = CoreCoinsAPI.get().transact(coin, from, to, 100, UUID.randomUUID());
     }
 }

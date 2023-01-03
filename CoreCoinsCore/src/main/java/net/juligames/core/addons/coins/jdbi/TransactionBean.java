@@ -1,7 +1,5 @@
 package net.juligames.core.addons.coins.jdbi;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.sql.Date;
 
 /**

@@ -1,6 +1,5 @@
 package net.juligames.core.addons.coins.jdbi;
 
-import net.juligames.core.api.jdbi.mapper.bean.LocaleBean;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -42,7 +41,7 @@ public interface CoinDAO {
     CoinBean selectBean(@Bind("name") String name);
 
     default boolean has(String name, String description) {
-        return listAllBeans().contains(new CoinBean(name,description));
+        return listAllBeans().contains(new CoinBean(name, description));
     }
 
 }
