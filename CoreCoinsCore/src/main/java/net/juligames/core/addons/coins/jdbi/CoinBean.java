@@ -14,7 +14,7 @@ public class CoinBean {
     @Nullable
     private String description;
 
-    public CoinBean(String name,@Nullable String description) {
+    public CoinBean(String name, @Nullable String description) {
         this.name = name;
         this.description = description;
     }

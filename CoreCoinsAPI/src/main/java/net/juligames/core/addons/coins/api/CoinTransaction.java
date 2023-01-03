@@ -16,8 +16,8 @@ import java.util.UUID;
 public interface CoinTransaction {
 
     /**
-     * @apiNote do not use for advanced checking, just for monitoring.
      * @return the initiator of the Transaction
+     * @apiNote do not use for advanced checking, just for monitoring.
      */
     @Nullable
     UUID initiator();
@@ -44,7 +44,6 @@ public interface CoinTransaction {
     Date timestamp();
 
     /**
-     *
      * @return if the transaction was performed. if returned false you can check out the errors {@link CoinTransaction#failures()}
      */
     boolean successful();

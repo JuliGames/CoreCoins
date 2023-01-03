@@ -22,7 +22,7 @@ public interface BalanceDAO {
             accountName  varchar(50) not null primary key ,
             coinName varchar(30) not null,
             balance int not null,
-            
+                        
             constraint coinName_fk foreign key (coinName) REFERENCES coins_coins(name),
             constraint accountName_fk foreign key (accountName) REFERENCES coins_accounts(name)
             );""")
@@ -45,7 +45,7 @@ public interface BalanceDAO {
     void delete(@Bind("name") String accountName);
 
     @SqlUpdate("DELETE FROM coins_balance WHERE accountName = :name AND coinName = :coinName")
-    void delete(@Bind("name") String accountName, @Bind("coinName") String coinName) ;
+    void delete(@Bind("name") String accountName, @Bind("coinName") String coinName);
 
     @SqlUpdate("UPDATE coins_balance " +
             "SET balance = :balance " +

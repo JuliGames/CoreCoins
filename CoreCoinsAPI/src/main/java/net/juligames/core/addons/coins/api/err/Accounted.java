@@ -7,6 +7,7 @@ import java.util.UUID;
 
 /**
  * Used for {@link Exception}s
+ *
  * @author Ture Bentzin
  * 10.12.2022
  */
