@@ -6,6 +6,7 @@ import net.juligames.core.addons.coins.jdbi.AccountDAO;
 import net.juligames.core.addons.coins.jdbi.CoinBean;
 import net.juligames.core.addons.coins.jdbi.CoinDAO;
 import net.juligames.core.api.API;
+import net.juligames.core.api.err.dev.TODOException;
 import org.jdbi.v3.core.Jdbi;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -84,6 +85,16 @@ public final class CoreCoinsCore implements CoreCoinsAPI {
     @Override
     public CoinsAccount getDepositAccount() {
         return createAccount("deposit",null);
+    }
+
+    @Override
+    public Collection<CoinTransaction> getAllTransactions() {
+        throw new TODOException();
+    }
+
+    @Override
+    public Collection<CoinTransaction> getAllTransactions(Predicate<CoinTransaction> transactionPredicate) {
+        return getAllTransactions().stream().filter(transactionPredicate).toList();
     }
 
     @Override

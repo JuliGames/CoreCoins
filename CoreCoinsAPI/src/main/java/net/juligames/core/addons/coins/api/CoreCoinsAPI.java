@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.function.Predicate;
+import java.util.prefs.Preferences;
 
 /**
  * @author Ture Bentzin
@@ -56,4 +57,8 @@ public interface CoreCoinsAPI {
      */
     @ApiStatus.Internal
     CoinsAccount getDepositAccount();
+
+    Collection<CoinTransaction> getAllTransactions();
+
+    Collection<CoinTransaction> getAllTransactions(Predicate<CoinTransaction> transactionPredicate);
 }
