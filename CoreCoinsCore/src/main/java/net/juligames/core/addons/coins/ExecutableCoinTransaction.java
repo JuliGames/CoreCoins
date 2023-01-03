@@ -7,7 +7,6 @@ import net.juligames.core.addons.coins.api.err.AccountDeficitException;
 import net.juligames.core.addons.coins.api.err.AccountOverflowException;
 import net.juligames.core.addons.coins.api.err.TransactionAlreadyCompletedException;
 import net.juligames.core.addons.coins.api.err.TransactionException;
-import net.juligames.core.api.err.dev.TODOException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -17,10 +16,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
 
 /**
  * @author Ture Bentzin
@@ -30,6 +25,13 @@ public class ExecutableCoinTransaction implements CoinTransaction {
 
     private @Nullable UUID initiator;
     private @Nullable Date timeStamp;
+    private @NotNull CoinsAccount from;
+    private @NotNull CoinsAccount to;
+    private @NotNull Coin coin;
+    private boolean executed = false;
+    private @NotNull Collection<TransactionException> transactionExceptions;
+    @Range(from = Integer.MIN_VALUE, to = Integer.MAX_VALUE)
+    private int amount = 0;
 
     public ExecutableCoinTransaction(@Nullable UUID initiator, @NotNull CoreCoinsAccount from,
                                      @NotNull CoreCoinsAccount to, @NotNull CoreCoin coin,
@@ -41,18 +43,6 @@ public class ExecutableCoinTransaction implements CoinTransaction {
         this.amount = amount;
         this.transactionExceptions = new ArrayList<>();
     }
-
-    private @NotNull CoinsAccount from;
-    private @NotNull CoinsAccount to;
-    private @NotNull Coin coin;
-
-    private boolean executed = false;
-    private @NotNull Collection<TransactionException> transactionExceptions;
-
-    @Range(from = Integer.MIN_VALUE, to = Integer.MAX_VALUE)
-    private int amount = 0;
-
-
 
     @Override
     public @Nullable UUID initiator() {
@@ -81,7 +71,7 @@ public class ExecutableCoinTransaction implements CoinTransaction {
 
     @Override
     public @NotNull String getTransferString() {
-        return "transfer " + amount + " " + coin.getName() +" from " + from.accountName() + " to " + to.accountName();
+        return "transfer " + amount + " " + coin.getName() + " from " + from.accountName() + " to " + to.accountName();
     }
 
     @Override
@@ -102,17 +92,19 @@ public class ExecutableCoinTransaction implements CoinTransaction {
     //execute
     public synchronized void execute() {
         try {
-            if(executed) {
+            if (executed) {
                 throw new TransactionAlreadyCompletedException();
             }
             //run
             final int balance = from.getSpecificBalance(coin);
             //check 1 - deficit
-            if(balance < amount) throw new AccountDeficitException("senders account does not have enough of " + coin.getName(), from);
+            if (balance < amount)
+                throw new AccountDeficitException("senders account does not have enough of " + coin.getName(), from);
             {
                 int specificBalance = to.getSpecificBalance(coin);
                 int freeSpace = Integer.MAX_VALUE - specificBalance;
-                if(freeSpace < amount) throw new AccountOverflowException("recipients account would overflow when transaction would be allowed", to);
+                if (freeSpace < amount)
+                    throw new AccountOverflowException("recipients account would overflow when transaction would be allowed", to);
             }
             //allowed transaction
             {
@@ -130,10 +122,10 @@ public class ExecutableCoinTransaction implements CoinTransaction {
             //transaction finished
             executed = true;
             timeStamp = Date.from(Instant.now());
-        }catch (TransactionException transactionException) {
+        } catch (TransactionException transactionException) {
             failures().add(transactionException);
-        }catch (Exception e) {
-            failures().add(new TransactionException("Transaction failed because of an unknown exception",e));
+        } catch (Exception e) {
+            failures().add(new TransactionException("Transaction failed because of an unknown exception", e));
         }
 
     }
