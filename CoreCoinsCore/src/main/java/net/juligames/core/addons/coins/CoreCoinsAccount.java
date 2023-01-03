@@ -11,6 +11,7 @@ import net.juligames.core.api.TODO;
 import net.juligames.core.api.err.dev.TODOException;
 import org.jdbi.v3.core.extension.ExtensionCallback;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 import java.util.*;
 import java.util.function.Function;
@@ -72,6 +73,7 @@ public class CoreCoinsAccount implements CoinsAccount {
     public int changeAmount(Coin coin, Function<Integer, Integer> changer) {
         return API.get().getSQLManager().getJdbi().withExtension(BalanceDAO.class, extension -> {
             final int specificBalance = getSpecificBalance(coin);
+            @Range(from = 0, to = Integer.MAX_VALUE)
             final int newBalance = changer.apply(specificBalance);
             extension.update(accountName, coin.getName(), newBalance);
             return specificBalance;

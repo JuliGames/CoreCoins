@@ -1,5 +1,6 @@
 package net.juligames.core.addons.coins.api;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -45,4 +46,14 @@ public interface CoreCoinsAPI {
      */
     CoinsAccount getAccount(String accountName);
 
+    /**
+     * Get a CoinExchanger that will exchange between the two coins by the factor given
+     */
+    StaticCoinExchanger getExchanger(Coin from, Coin to, double factor);
+
+    /**
+     * This Account is reserved and has the name "deposit" - it can be used for exchange
+     */
+    @ApiStatus.Internal
+    CoinsAccount getDepositAccount();
 }

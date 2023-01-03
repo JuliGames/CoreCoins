@@ -77,6 +77,16 @@ public final class CoreCoinsCore implements CoreCoinsAPI {
     }
 
     @Override
+    public StaticCoinExchanger getExchanger(Coin from, Coin to, double factor) {
+        return new CoreStaticCoinExchanger(from, to, factor);
+    }
+
+    @Override
+    public CoinsAccount getDepositAccount() {
+        return createAccount("deposit",null);
+    }
+
+    @Override
     public @NotNull CoinTransaction transact(Coin coin, CoinsAccount sender, CoinsAccount recipient, int amount, @Nullable UUID initiator) {
         ExecutableCoinTransaction transaction = new ExecutableCoinTransaction(initiator, sender, recipient, coin, amount);
         transaction.execute();
