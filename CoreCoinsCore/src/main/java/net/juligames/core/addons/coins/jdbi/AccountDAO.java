@@ -42,8 +42,8 @@ public interface AccountDAO {
 
     @SqlUpdate("UPDATE coins_accounts " +
             "SET owner = :owner " +
-            "WHERE name LIKE :name;")
-    void update(@Bind("name") String name, @Bind("owner") String owner);
+            "WHERE name = :name;")
+    void update(@Bind("name") String name, @Bind("owner") String newOwner);
 
     @SqlQuery("SELECT * FROM coins_accounts where name = :name")
     AccountBean selectBean(@Bind("name") String name);

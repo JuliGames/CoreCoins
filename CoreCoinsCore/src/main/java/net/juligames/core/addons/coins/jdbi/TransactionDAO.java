@@ -6,6 +6,7 @@ import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
+import java.sql.Date;
 import java.util.List;
 
 /**
@@ -36,31 +37,36 @@ public interface TransactionDAO {
             );""")
     void createTable();
 
-    @SqlQuery("SELECT * FROM coins_balance")
-    List<BalanceBean> listAllBeans();
+    @SqlQuery("SELECT * FROM coins_transaction")
+    List<TransactionBean> listAllBeans();
 
     @SqlUpdate("""
-            INSERT IGNORE INTO coins_balance(accountName, coinName, balance) values (:name,:coin, :balance)
+            INSERT IGNORE INTO coins_transaction(timeStamp, from_account, to_account, coin, amount, initiator)
+             values (:timeStamp,:from_account,:to_account,:coin,:amount,:initiator)
             """)
-    void insert(@Bind("name") String accountName, @Bind("coin") String coinName, @Bind("balance") int balance);
+    void insert(@Bind("timeStamp") Date date, @Bind("from_account") String from_account,
+                @Bind("to_account") String to_account, @Bind("coin") String coin, @Bind("amount") int amount,
+                @Bind("initiator") String initiator);
 
     @SqlUpdate("""
-            INSERT IGNORE INTO coins_accounts(accountName, coinName, balance) values (:accountName, :coinName, :balance)
+            INSERT IGNORE INTO coins_transaction(timeStamp, from_account, to_account, coin, amount, initiator)
+             values (:timeStamp,:from,:to,:coin,:amount,:initiator)
             """)
     void insert(@BindBean BalanceBean balanceBean);
 
-    @SqlUpdate("DELETE FROM coins_balance WHERE name = :name")
-    void delete(@Bind("name") String accountName);
+    @SqlUpdate("DELETE FROM coins_transaction WHERE timeStamp = :date")
+    void delete(@Bind("date") Date date);
 
-    @SqlUpdate("DELETE FROM coins_balance WHERE accountName = :name AND coinName = :coinName")
-    void delete(@Bind("name") String accountName, @Bind("coinName") String coinName) ;
+    @SqlUpdate("DELETE FROM coins_transaction WHERE timeStamp = :date AND from_account = :from_account AND to_account = :to_account AND coin = :coin")
+    void delete(@Bind("data") Date date, @Bind("from_account") String from_account,
+                @Bind("to_account") String to_account, @Bind("coin") String coin);
 
-    @SqlUpdate("UPDATE coins_balance " +
-            "SET balance = :balance " +
-            "WHERE accountName LIKE :name AND coinName LIKE :coinName")
-    void update(@Bind("name") String name, @Bind("coinName") String coinName, @Bind("balance") int balance);
+    @SqlQuery("SELECT * FROM coins_transaction WHERE timeStamp = :date AND from_account = :from_account AND to_account = :to_account AND coin = :coin")
+    BalanceBean selectBean(@Bind("data") Date date, @Bind("from_account") String from_account,
+                           @Bind("to_account") String to_account, @Bind("coin") String coin);
 
-    @SqlQuery("SELECT * FROM coins_balance where name = :name AND coinName = :coinName")
-    BalanceBean selectBean(@Bind("name") String name, @Bind("coin") String coinName);
+    @SqlQuery("SELECT * FROM coins_transaction WHERE from_account = :from_account AND to_account = :to_account")
+    List<BalanceBean> selectBeans(@Bind("from_account") String from_account,
+                                  @Bind("to_account") String to_account);
 
 }

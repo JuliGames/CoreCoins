@@ -37,11 +37,11 @@ public interface BalanceDao {
     void insert(@Bind("name") String accountName, @Bind("coin") String coinName, @Bind("balance") int balance);
 
     @SqlUpdate("""
-            INSERT IGNORE INTO coins_accounts(accountName, coinName, balance) values (:accountName, :coinName, :balance)
+            INSERT IGNORE INTO coins_balance(accountName, coinName, balance) values (:accountName, :coinName, :balance)
             """)
     void insert(@BindBean BalanceBean balanceBean);
 
-    @SqlUpdate("DELETE FROM coins_balance WHERE name = :name")
+    @SqlUpdate("DELETE FROM coins_balance WHERE accountName = :name")
     void delete(@Bind("name") String accountName);
 
     @SqlUpdate("DELETE FROM coins_balance WHERE accountName = :name AND coinName = :coinName")
@@ -52,7 +52,10 @@ public interface BalanceDao {
             "WHERE accountName LIKE :name AND coinName LIKE :coinName")
     void update(@Bind("name") String name, @Bind("coinName") String coinName, @Bind("balance") int balance);
 
-    @SqlQuery("SELECT * FROM coins_balance where name = :name AND coinName = :coinName")
+    @SqlQuery("SELECT * FROM coins_balance where accountName = :name AND coinName = :coinName")
     BalanceBean selectBean(@Bind("name") String name, @Bind("coin") String coinName);
+
+    @SqlQuery("SELECT * FROM coins_balance where accountName = :name")
+    List<BalanceBean> selectBalance(@Bind("name") String name);
 
 }
